@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Get the command (first argument)
+command="$1"
+# Get all remaining arguments after the command
+args="${@:2}"
+
+# Function to execute terraform commands
+execute_terraform_command() {
+    # Store current directory
+    current_dir=$(pwd)
+    
+    # Check if .env file exists in the root directory
+    if [ ! -f "$current_dir/.env" ]; then
+        echo "Error: .env file not found in project root"
+        exit 1
+    fi
+    
+    # Load environment variables from .env file
+    set -a  # automatically export all variables
+    source "$current_dir/.env"
+    set +a  # disable auto-export
+    
+    # Change to terraform directory
+    cd terraform || {
+        echo "Error: terraform directory not found"
+        exit 1
+    }
+    
+    # Execute terraform command with all remaining arguments
+    terraform $args
+    
+    # Store the exit code
+    exit_code=$?
+    
+    # Change back to original directory
+    cd "$current_dir"
+    
+    # Return the terraform command's exit code
+    return $exit_code
+}
+
+# Main command handler
+case "$command" in
+    "tf")
+        execute_terraform_command
+        ;;
+    *)
+        echo "Unknown command: $command"
+        echo "Available commands: tf"
+        exit 1
+        ;;
+esac

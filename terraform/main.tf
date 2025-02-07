@@ -1,13 +1,23 @@
+terraform {
+  required_providers {
+    render = {
+      source = "render-oss/render"
+      version = "1.4.0"
+    }
+  }
+}
+
 provider "render" {
 }
 
 resource "render_web_service" "express_app" {
+  start_command = "npm start"
+
   runtime_source = {
     native_runtime = {
       repo_url      = var.repo_url
       branch        = var.branch
       build_command = "npm install"
-      start_command = "node index.js"
       auto_deploy   = true
       runtime       = "node"
       exclude_files = [".terraform/**", "*.tf", ".env"]
@@ -16,5 +26,5 @@ resource "render_web_service" "express_app" {
 
   name    = var.service_name
   region  = var.region
-  plan    = "starter"  # Choose the plan that suits your needs
+  plan    = "starter"
 }
