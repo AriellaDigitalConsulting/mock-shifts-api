@@ -24,6 +24,31 @@ function getRandomShiftRange() {
     return ranges[Math.floor(Math.random() * ranges.length)];
 }
 
+// List of Marvel superheroes to use as colleagues
+const marvelHeroes = [
+    'Iron Man',
+    'Captain America',
+    'Thor',
+    'Black Widow',
+    'Hulk',
+    'Hawkeye',
+    'Spider-Man',
+    'Doctor Strange',
+    'Black Panther',
+    'Captain Marvel',
+    'Scarlet Witch',
+    'Vision',
+    'Ant-Man',
+    'Star-Lord',
+    'Groot'
+];
+
+// Helper function to get random colleagues
+function getRandomColleagues(count = 5) {
+    const shuffled = [...marvelHeroes].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
 // Endpoint: Returns available shifts for the next 9 days
 app.get('/api/v1/shifts/mine', (req, res) => {
     const shifts = [];
@@ -41,5 +66,25 @@ app.get('/api/v1/shifts/mine', (req, res) => {
 
     res.json({
         items: shifts
+    });
+});
+
+// Endpoint: Returns available colleagues for a specific shift
+app.get('/api/v1/available_colleagues', (req, res) => {
+    const shiftId = req.query.shift_id;
+    
+    if (!shiftId) {
+        return res.status(400).json({
+            error: 'shift_id is required'
+        });
+    }
+
+    const availableColleagues = getRandomColleagues().map(name => ({
+        name: name,
+        id: uuidv4()
+    }));
+
+    res.json({
+        items: availableColleagues
     });
 });
