@@ -20,7 +20,7 @@ function formatDate(date) {
 
 // Helper function to get random shift time range
 function getRandomShiftRange() {
-    const ranges = ['00-08', '08-16', '16-24'];
+    const ranges = ['midnight - 8 a.m.', '8 a.m. - 4 p.m.', '4 p.m. - midnight'];
     return ranges[Math.floor(Math.random() * ranges.length)];
 }
 
